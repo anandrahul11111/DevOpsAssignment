@@ -14,8 +14,8 @@ def determineCommitAuthor(currentBuild) {
                 ids << entry.commitId.toString()
                 authors << entry.author.toString()
                 msgs << entry.msg
-            
-            print("new author=="+getCommitAuthor(entry.commitId.toString()))
+            def authorEmail = sh script: "git log -1 --pretty=tformat:'%ae' ${entry.commitId.toString()}", returnStdout: true
+            print("new author=="+authorEmail)
             }
         }
         
@@ -28,11 +28,7 @@ def determineCommitAuthor(currentBuild) {
 
     print("Jenkins Custom Data for Change set " + jenkinsCustomData)
     return jenkinsCustomData
-}
-def getCommitAuthor(id){
-    def authorEmail = sh script: "git log -1 --pretty=tformat:'%ae' ${id}", returnStdout: true
-    return authorEmail;
-}
+
 pipeline {
     agent any
     stages {
