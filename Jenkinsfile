@@ -14,7 +14,7 @@ def determineCommitAuthor(currentBuild) {
                 ids << entry.commitId.toString()
                 authors << entry.author.toString()
                 msgs << entry.msg
-            def authorEmail = sh script: "git log -1 --pretty=tformat:'%ae' ${entry.commitId.toString()}", returnStdout: true
+            def authorEmail = sh(returnStdout: true, script: 'git log -1 --pretty=format:"%an"').trim()
             print("new author=="+authorEmail)
             }
         }
