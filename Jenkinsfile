@@ -28,7 +28,7 @@ def determineCommitAuthor(currentBuild) {
 
     print("Jenkins Custom Data for Change set " + jenkinsCustomData)
     return jenkinsCustomData
-
+}
 pipeline {
     agent any
     stages {
