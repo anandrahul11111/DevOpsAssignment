@@ -1,4 +1,3 @@
-import org.jenkinsci.plugins.gitclient.SerializableGitChangeSetList
 def modules = ['all-post-service', 'edit-post-service', 'create-post-service', 'like-post-service', 'memories-ui'];
 def determineCommitAuthor(currentBuild) {
     def ids = []
