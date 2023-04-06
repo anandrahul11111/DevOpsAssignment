@@ -19,7 +19,7 @@ pipeline {
                                 authors << entry.author.toString()
                                 msgs << entry.msg
                             def authorEmail = sh returnStdout: true, script: "git log -1 --pretty=tformat:'%ae' ${entry.commitId.toString()}"
-                            print("new author==$authorEmail)
+                            print("new author==$authorEmail")
                             }
                         }
 
