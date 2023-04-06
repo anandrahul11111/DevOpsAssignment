@@ -1,4 +1,5 @@
 def modules = ['all-post-service', 'edit-post-service', 'create-post-service', 'like-post-service', 'memories-ui'];
+@NonCPS
 def determineCommitAuthor(currentBuild) {
     def ids = []
 	def authors = []
