@@ -87,7 +87,7 @@ pipeline {
 //                     bat "kubectl get deployment"
 //                 }
 //             }
-        }
+//         }
 
     }
 }
