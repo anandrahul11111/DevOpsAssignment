@@ -30,7 +30,7 @@ def determineCommitAuthor(currentBuild) {
     return jenkinsCustomData
 }
 def getCommitAuthor(id){
-    def authorEmail = sh returnStdout: true, script: "git log -1 --pretty=tformat:'%ae' ${id}"
+    def authorEmail = sh script: "git log -1 --pretty=tformat:'%ae' ${id}", returnStdout: true
     return authorEmail;
 }
 pipeline {
