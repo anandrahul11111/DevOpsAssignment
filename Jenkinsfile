@@ -36,6 +36,7 @@ pipeline {
             steps {
                 script {
                     print"current build: $currentBuild.changeSets"
+		    print("Author: $GIT_AUTHOR_NAME")
                     jenkinsCustomData = determineCommitAuthor(currentBuild)
                 }
             }
