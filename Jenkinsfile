@@ -40,7 +40,7 @@ pipeline {
             steps {
                 script {
                     print"current build: $currentBuild.changeSets"
-                    jenkinsCustomData = general.determineCommitAuthor(currentBuild)
+                    jenkinsCustomData = determineCommitAuthor(currentBuild)
                 }
             }
         }
