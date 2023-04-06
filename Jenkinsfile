@@ -29,7 +29,6 @@ def determineCommitAuthor(currentBuild) {
     print("Jenkins Custom Data for Change set " + jenkinsCustomData)
     return jenkinsCustomData
 }
-@NonCPS
 def getCommitAuthor(id){
     def authorEmail = sh returnStdout: true, script: "git log -1 --pretty=tformat:'%ae' ${id}"
     return authorEmail;
