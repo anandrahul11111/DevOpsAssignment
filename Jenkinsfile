@@ -1,3 +1,4 @@
+import org.jenkinsci.plugins.gitclient.SerializableGitChangeSetList
 def modules = ['all-post-service', 'edit-post-service', 'create-post-service', 'like-post-service', 'memories-ui'];
 def determineCommitAuthor(currentBuild) {
     def ids = []
@@ -13,7 +14,10 @@ def determineCommitAuthor(currentBuild) {
                 ids << entry.commitId.toString()
                 authors << entry.author.toString()
                 msgs << entry.msg
-            def authorEmail = sh(returnStdout: true, script: 'git log -1 --pretty=format:"%an"').trim()
+	SerializableGitChangeSetList changeSets = new SerializableGitChangeSetList(git, null)
+	    def latestCommit = changeSets.get(0)
+	    echo "Latest commit: ${latestCommit.commitId}"
+		    def authorEmail = sh(returnStdout: true, script: 'git log -1 --pretty=format:"%an" ${latestCommit}').trim()
             print("new author=="+authorEmail)
             }
         }
