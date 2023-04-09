@@ -14,6 +14,9 @@ def determineCommitAuthor(currentBuild) {
     jenkinsCustomData = [:];
 
     if ( currentBuild.changeSets ) {
+	    print"Changesets current build: $currentBuild.changeSets"
+	    def changese=sh(script: 'git log --oneline', returnStdout: true).trim()
+	    print"Changesets : $changese"
         for (def changeLog in currentBuild.changeSets) {
             def entries = changeLog.items
             for (def entry in entries) {
