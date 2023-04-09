@@ -15,15 +15,13 @@ def determineCommitAuthor(currentBuild) {
 	def authors = []
     def msgs = []
     jenkinsCustomData = [:];
-    if ( currentBuild.changeSets ) {
 	if ( currentBuild.changeSets ) {
 	    currentBuild.changeSets.each { changeSet ->
 	    changeSet.each { entry ->
 		ids << entry.commitId
-		authors << entry.author
+		authors << getCommitAuthor(ids[0])
 		msgs << entry.msg
 	    }
-	}
 	}
 //         for (def changeLog in currentBuild.changeSets) {
 // 		print"Changelogs: $changeLog"
