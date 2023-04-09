@@ -1,10 +1,14 @@
 def modules = ['all-post-service', 'edit-post-service', 'create-post-service', 'like-post-service', 'memories-ui'];
-def getCommitAuthor(commitId){
-    return sh(returnStdout: true, script: "git log -1 --pretty=format:\"%ae\" ${commitId}").trim()
-            .split("\n")
-            .collect { it.trim() }
-            .unique()
-            .findAll { it != 'noreply-github+ms@sap.com' }
+// def getCommitAuthor(commitId){
+//     return sh(returnStdout: true, script: "git log -1 --pretty=format:\"%ae\" ${commitId}").trim()
+//             .split("\n")
+//             .collect { it.trim() }
+//             .unique()
+//             .findAll { it != 'noreply-github+ms@sap.com' }
+// }
+def getCommitAuthor(id){
+    def authorEmail = sh returnStdout: true, script: "git log -1 --pretty=tformat:'%ae' ${id}"
+    return authorEmail;
 }
 def determineCommitAuthor(currentBuild) {
     def ids = []
