@@ -1,6 +1,6 @@
 def modules = ['all-post-service', 'edit-post-service', 'create-post-service', 'like-post-service', 'memories-ui'];
 def getCommitAuthor(commitId){
-    return sh(returnStdout: true, script: "git log --pretty=format:\"%ae\" ${commitId[0]}").trim()
+    return sh(returnStdout: true, script: "git log --pretty=format:\"%ae\" ${commitId}").trim()
 // 	return sh(returnStdout: true, script: "git log --pretty=format:\"%ae\"").trim()
             .split("\n")
             .collect { it.trim() }
@@ -14,26 +14,31 @@ def determineCommitAuthor(currentBuild) {
     jenkinsCustomData = [:];
 
     if ( currentBuild.changeSets ) {
-	    print"Changesets current build: $currentBuild.changeSets"
-	    def changese=sh(script: 'git log --oneline', returnStdout: true).trim()
-	    print"Changesets : $changese"
-        for (def changeLog in currentBuild.changeSets) {
-            def entries = changeLog.items
-            for (def entry in entries) {
-            print("ids=="+entry.commitId.toString()+" author=="+entry.author.toString()+ " message=="+entry.msg)
-                ids << entry.commitId.toString()
-                authors << entry.author.toString()
-                msgs << entry.msg
-	    print"ids==$ids"
-// 	    def id = ids[0]
-		gitList = gitInfo.getGitInfo()
-                GIT_COMMIT = gitList[0]
-                GIT_AUTHOR = gitList[1]
-		print"GIT_COMMIT==$GIT_COMMIT"
-		print"GIT_AUTHOR==$GIT_AUTHOR"
-		    
-            print("new author=="+getCommitAuthor(ids))
+	    changeSets.each { changeSet ->
+	    changeSet.each { entry ->
+		println "Commit ID: ${entry.commitId}"
+		println "Message: ${entry.msg}"
+		print("new author=="+getCommitAuthor(entry.commitId))
 	    }
+	}
+	    
+//         for (def changeLog in currentBuild.changeSets) {
+//             def entries = changeLog.items
+//             for (def entry in entries) {
+//             print("ids=="+entry.commitId.toString()+" author=="+entry.author.toString()+ " message=="+entry.msg)
+//                 ids << entry.commitId.toString()
+//                 authors << entry.author.toString()
+//                 msgs << entry.msg
+// 	    print"ids==$ids"
+// // 	    def id = ids[0]
+// 		gitList = gitInfo.getGitInfo()
+//                 GIT_COMMIT = gitList[0]
+//                 GIT_AUTHOR = gitList[1]
+// 		print"GIT_COMMIT==$GIT_COMMIT"
+// 		print"GIT_AUTHOR==$GIT_AUTHOR"
+		    
+//             print("new author=="+getCommitAuthor(ids))
+// 	    }
         }
         
         jenkinsCustomData['commit_id'] = ids.join(",")
