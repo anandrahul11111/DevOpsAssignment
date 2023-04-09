@@ -1,6 +1,7 @@
 def modules = ['all-post-service', 'edit-post-service', 'create-post-service', 'like-post-service', 'memories-ui'];
-def getCommitAuthor(commitId){
-    return sh(returnStdout: true, script: "git log --pretty=format:\"%ae\" ${commitId}").trim()
+def getCommitAuthor(){
+//     return sh(returnStdout: true, script: "git log --pretty=format:\"%ae\" ${commitId}").trim()
+	return sh(returnStdout: true, script: "git log --pretty=format:\"%ae\" eb2d6048f0031853757c8ad11ad2a5e744ea42b0").trim()
             .split("\n")
             .collect { it.trim() }
             .unique()
@@ -22,7 +23,8 @@ def determineCommitAuthor(currentBuild) {
                 msgs << entry.msg
 
 // 	    def id = entry.commitId.toString()
-            print("new author=="+getCommitAuthor(ids[0]))
+//             print("new author=="+getCommitAuthor(ids[0]))
+		print("new author=="+getCommitAuthor())
 	    }
         }
         
