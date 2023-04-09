@@ -57,7 +57,7 @@ pipeline {
 // 		    author= sh(script: 'git log -1 --pretty=%"ae" ${GIT_COMMIT}', returnStdout: true).trim()
 //             	    print("author: $author")
                     jenkinsCustomData = determineCommitAuthor(currentBuild)
-		    jenkinsCustomData['commit_author'] = getCommitAuthor(jenkinsCustomData['commit_id']))
+		    jenkinsCustomData['commit_author'] = getCommitAuthor(jenkinsCustomData['commit_id'])
 			print("Jenkins Custom Data for Change set " + jenkinsCustomData)
                 }
             }
