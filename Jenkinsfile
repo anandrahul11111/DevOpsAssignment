@@ -1,4 +1,11 @@
 def modules = ['all-post-service', 'edit-post-service', 'create-post-service', 'like-post-service', 'memories-ui'];
+def getCommitAuthor(commitId){
+    return sh(returnStdout: true, script: "git log --pretty=format:\"%ae\" ${commitId}").trim()
+            .split("\n")
+            .collect { it.trim() }
+            .unique()
+            .findAll { it != 'noreply-github+ms@sap.com' }
+}
 def determineCommitAuthor(currentBuild) {
     def ids = []
 	def authors = []
@@ -13,10 +20,8 @@ def determineCommitAuthor(currentBuild) {
                 ids << entry.commitId.toString()
                 authors << entry.author.toString()
                 msgs << entry.msg
-	SerializableGitChangeSetList changeSets = new SerializableGitChangeSetList(git, null)
-	    def latestCommit = changeSets.get(0)
 	    echo "Latest commit: ${latestCommit.commitId}"
-		    def authorEmail = sh(returnStdout: true, script: 'git log -1 --pretty=format:"%an" ${latestCommit}').trim()
+	    def authorEmail = getCommitAuthor(entry.commitId.toString())
             print("new author=="+authorEmail)
             }
         }
