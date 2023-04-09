@@ -39,7 +39,7 @@ def determineCommitAuthor(currentBuild) {
 		    
 //             print("new author=="+getCommitAuthor(ids))
 // 	    }
-        }
+//         }
         
         jenkinsCustomData['commit_id'] = ids.join(",")
         jenkinsCustomData['commit_author'] = authors.join(",")
