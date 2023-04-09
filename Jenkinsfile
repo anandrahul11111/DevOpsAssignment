@@ -6,7 +6,12 @@ def getCommitAuthor(commitId){
             .unique()
             .findAll { it != 'noreply-github+ms@sap.com' }
 }
-def getLogs(currentBuild){
+def determineCommitAuthor(currentBuild) {
+    def ids = []
+	def authors = []
+    def msgs = []
+    jenkinsCustomData = [:];
+    if ( currentBuild.changeSets ) {
 	if ( currentBuild.changeSets ) {
 	    currentBuild.changeSets.each { changeSet ->
 	    changeSet.each { entry ->
@@ -16,14 +21,6 @@ def getLogs(currentBuild){
 	    }
 	}
 	}
-}
-def determineCommitAuthor(currentBuild) {
-    def ids = []
-	def authors = []
-    def msgs = []
-    jenkinsCustomData = [:];
-    if ( currentBuild.changeSets ) {
-	def logs = getLogs(currentBuild)
 //         for (def changeLog in currentBuild.changeSets) {
 // 		print"Changelogs: $changeLog"
 //             def entries = changeLog.items
@@ -37,7 +34,7 @@ def determineCommitAuthor(currentBuild) {
 //             print("new author=="+getCommitAuthor(entry.commitId.toString()))
 // 	    }
 //         }
-        print("new author=="+getCommitAuthor(logs))
+//         print("new author=="+getCommitAuthor(logs))
         jenkinsCustomData['commit_id'] = ids.join(",")
         jenkinsCustomData['commit_author'] = authors.join(",")
         jenkinsCustomData['commit_message']= msgs.join(",")
@@ -46,7 +43,8 @@ def determineCommitAuthor(currentBuild) {
     }
 
     print("Jenkins Custom Data for Change set " + jenkinsCustomData)
-    return jenkinsCustomData
+//     return jenkinsCustomData
+	return ids
 }
 pipeline {
     agent any
@@ -58,6 +56,7 @@ pipeline {
 // 		    author= sh(script: 'git log -1 --pretty=%"ae" ${GIT_COMMIT}', returnStdout: true).trim()
 //             	    print("author: $author")
                     jenkinsCustomData = determineCommitAuthor(currentBuild)
+			print("new author=="+getCommitAuthor(jenkinsCustomData))
                 }
             }
         }
