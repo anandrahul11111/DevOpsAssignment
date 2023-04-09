@@ -17,12 +17,15 @@ def determineCommitAuthor(currentBuild) {
             def entries = changeLog.items
             for (def entry in entries) {
             print("ids=="+entry.commitId.toString()+" author=="+entry.author.toString()+ " message=="+entry.msg)
-                ids << entry.commitId.toString()
-                authors << entry.author.toString()
-                msgs << entry.msg
+//                 ids << entry.commitId.toString()
+//                 authors << entry.author.toString()
+//                 msgs << entry.msg
+		 ids.add(entry.commitId.toString())
+                authors.add(entry.author.toString())
+                msgs.add(entry.msg)
 
-	    def id = entry.commitId.toString()
-            print("new author=="+ids[0])            
+// 	    def id = entry.commitId.toString()
+            print("new author=="+getCommitAuthor(ids[0]))
 	    }
         }
         
