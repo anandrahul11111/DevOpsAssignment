@@ -20,9 +20,8 @@ def determineCommitAuthor(currentBuild) {
                 ids << entry.commitId.toString()
                 authors << entry.author.toString()
                 msgs << entry.msg
-	    echo "Latest commit: ${latestCommit.commitId}"
-	    def authorEmail = getCommitAuthor(entry.commitId.toString())
-            print("new author=="+authorEmail)
+
+		print("new author=="+getCommitAuthor(entry.commitId.toString()))
             }
         }
         
