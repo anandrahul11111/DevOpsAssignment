@@ -26,6 +26,12 @@ def determineCommitAuthor(currentBuild) {
                 msgs << entry.msg
 	    print"ids==$ids"
 // 	    def id = ids[0]
+		gitList = gitInfo.getGitInfo()
+                GIT_COMMIT = gitList[0]
+                GIT_AUTHOR = gitList[1]
+		print"GIT_COMMIT==$GIT_COMMIT"
+		print"GIT_AUTHOR==$GIT_AUTHOR"
+		    
             print("new author=="+getCommitAuthor(ids))
 	    }
         }
