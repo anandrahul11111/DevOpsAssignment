@@ -50,7 +50,7 @@ def modules = ['all-post-service', 'edit-post-service', 'create-post-service', '
 
 def determineCommitAuthor(currentBuild) {
     jenkinsCustomData = getAuthor(currentBuild)
-    jenkinsCustomData['commit_author'] = getCommitAuthor(jenkinsCustomData['commit_id'])
+    jenkinsCustomData['commit_author'] = getCommitAuthor(jenkinsCustomData['commit_id'].split(",")[0])
     return jenkinsCustomData
 }
 
