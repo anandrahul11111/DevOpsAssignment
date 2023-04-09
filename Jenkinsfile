@@ -15,15 +15,15 @@ def getLogs(currentBuild){
 		msgs << entry.msg
 	    }
 	}
+	}
 }
 def determineCommitAuthor(currentBuild) {
     def ids = []
 	def authors = []
     def msgs = []
     jenkinsCustomData = [:];
-    
-	if ( currentBuild.changeSets ) {
-		def logs = getLogs(currentBuild)
+    if ( currentBuild.changeSets ) {
+	def logs = getLogs(currentBuild)
 //         for (def changeLog in currentBuild.changeSets) {
 // 		print"Changelogs: $changeLog"
 //             def entries = changeLog.items
@@ -118,5 +118,4 @@ pipeline {
 //         }
 
     }
-}
 }
