@@ -6,47 +6,85 @@ def modules = ['all-post-service', 'edit-post-service', 'create-post-service', '
 //             .unique()
 //             .findAll { it != 'noreply-github+ms@sap.com' }
 // }
-def getCommitAuthor(id){
-    def authorEmail = sh returnStdout: true, script: "git log -1 --pretty=tformat:'%ae' ${id}"
-    return authorEmail;
-}
+// def getCommitAuthor(id){
+//     def authorEmail = sh returnStdout: true, script: "git log -1 --pretty=tformat:'%ae' ${id}"
+//     return authorEmail;
+// }
+// def determineCommitAuthor(currentBuild) {
+//     def ids = []
+// 	def authors = []
+//     def msgs = []
+//     jenkinsCustomData = [:];
+// 	if ( currentBuild.changeSets ) {
+// 	    currentBuild.changeSets.each { changeSet ->
+// 	    changeSet.each { entry ->
+// 		ids << entry.commitId
+// // 		authors << getCommitAuthor(ids[0])
+// 		msgs << entry.msg
+// 	    }
+// 	}
+// //         for (def changeLog in currentBuild.changeSets) {
+// // 		print"Changelogs: $changeLog"
+// //             def entries = changeLog.items
+// // 		print"entries: $entries"
+// //             for (def entry in entries) {
+// //             print("ids=="+entry.commitId.toString()+" author=="+entry.author.toString()+ " message=="+entry.msg)
+// //                 ids << entry.commitId.toString()
+// //                 authors << entry.author.toString()
+// //                 msgs << entry.msg
+// // 	    print"ids==$ids"
+// //             print("new author=="+getCommitAuthor(entry.commitId.toString()))
+// // 	    }
+// //         }
+// //         print("new author=="+getCommitAuthor(logs))
+//         jenkinsCustomData['commit_id'] = ids.join(",")
+// //         jenkinsCustomData['commit_author'] = authors.join(",")
+//         jenkinsCustomData['commit_message']= msgs.join(",")
+//     } else {
+//         print("Error: No changeset found in currentBuild")
+//     }
+
+// //     print("Jenkins Custom Data for Change set " + jenkinsCustomData)
+//     return jenkinsCustomData
+// }
+
 def determineCommitAuthor(currentBuild) {
+    jenkinsCustomData = getAuthor(currentBuild)
+    jenkinsCustomData['commit_author'] = getCommitAuthor(jenkinsCustomData['commit_id'])
+    return jenkinsCustomData
+}
+
+def getAuthor(currentBuild){
     def ids = []
 	def authors = []
     def msgs = []
     jenkinsCustomData = [:];
-	if ( currentBuild.changeSets ) {
-	    currentBuild.changeSets.each { changeSet ->
-	    changeSet.each { entry ->
-		ids << entry.commitId
-// 		authors << getCommitAuthor(ids[0])
-		msgs << entry.msg
-	    }
-	}
-//         for (def changeLog in currentBuild.changeSets) {
-// 		print"Changelogs: $changeLog"
-//             def entries = changeLog.items
-// 		print"entries: $entries"
-//             for (def entry in entries) {
-//             print("ids=="+entry.commitId.toString()+" author=="+entry.author.toString()+ " message=="+entry.msg)
-//                 ids << entry.commitId.toString()
-//                 authors << entry.author.toString()
-//                 msgs << entry.msg
-// 	    print"ids==$ids"
-//             print("new author=="+getCommitAuthor(entry.commitId.toString()))
-// 	    }
-//         }
-//         print("new author=="+getCommitAuthor(logs))
+
+    if ( currentBuild.changeSets ) {
+        for (def changeLog in currentBuild.changeSets) {
+            def entries = changeLog.items
+            for (def entry in entries) {
+            print("ids=="+entry.commitId.toString()+" author=="+entry.author.toString()+ " message=="+entry.msg)
+                ids << entry.commitId.toString()
+                msgs << entry.msg
+            }
+        }
+        
         jenkinsCustomData['commit_id'] = ids.join(",")
-//         jenkinsCustomData['commit_author'] = authors.join(",")
         jenkinsCustomData['commit_message']= msgs.join(",")
     } else {
         print("Error: No changeset found in currentBuild")
     }
 
-//     print("Jenkins Custom Data for Change set " + jenkinsCustomData)
+    print("Jenkins Custom Data for Change set " + jenkinsCustomData)
     return jenkinsCustomData
 }
+
+def getCommitAuthor(id){
+    def authorEmail = sh returnStdout: true, script: "git log -1 --pretty=tformat:'%ae' ${id}"
+    return authorEmail;
+}
+
 pipeline {
     agent any
     stages {
@@ -57,8 +95,8 @@ pipeline {
 // 		    author= sh(script: 'git log -1 --pretty=%"ae" ${GIT_COMMIT}', returnStdout: true).trim()
 //             	    print("author: $author")
                     jenkinsCustomData = determineCommitAuthor(currentBuild)
-		    jenkinsCustomData['commit_author'] = getCommitAuthor(jenkinsCustomData['commit_id'])
-			print("Jenkins Custom Data for Change set " + jenkinsCustomData)
+// 		    jenkinsCustomData['commit_author'] = getCommitAuthor(jenkinsCustomData['commit_id'])
+		    print("Jenkins Custom Data for Change set " + jenkinsCustomData)
                 }
             }
         }
