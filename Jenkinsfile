@@ -29,7 +29,7 @@ def getCommitAuthor(commitId){
 // 	return sh(returnStdout: true, script: "git log --pretty=format:\"%ae\"").trim()
             .split("\n")
             .collect { it.trim() }
-            .unique()
+//             .unique()
             .findAll { it != 'noreply-github+ms@sap.com' }
 }
 def determineCommitAuthor(currentBuild) {
