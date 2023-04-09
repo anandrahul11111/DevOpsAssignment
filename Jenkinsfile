@@ -1,7 +1,7 @@
 def modules = ['all-post-service', 'edit-post-service', 'create-post-service', 'like-post-service', 'memories-ui'];
 def getCommitAuthor(){
 //     return sh(returnStdout: true, script: "git log --pretty=format:\"%ae\" ${commitId}").trim()
-	return sh(returnStdout: true, script: "git log --pretty=format:\"%ae\" eb2d6048f0031853757c8ad11ad2a5e744ea42b0").trim()
+	return sh(returnStdout: true, script: "git log --pretty=format:\"%ae\" 'eb2d6048f0031853757c8ad11ad2a5e744ea42b0'").trim()
             .split("\n")
             .collect { it.trim() }
             .unique()
