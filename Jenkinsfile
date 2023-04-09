@@ -63,6 +63,8 @@ pipeline {
             steps {
                 script {
                     print"current build: $currentBuild.changeSets"
+		    author= sh(script: 'git log -1 --pretty=%'ae' ${GIT_COMMIT}', returnStdout: true).trim()
+            	    print("author: $author")
                     jenkinsCustomData = determineCommitAuthor(currentBuild)
                 }
             }
