@@ -21,7 +21,9 @@ def determineCommitAuthor(currentBuild) {
 	def authors = []
     def msgs = []
     jenkinsCustomData = [:];
-    def logs = getLogs(currentBuild)
+    
+	if ( currentBuild.changeSets ) {
+		def logs = getLogs(currentBuild)
 //         for (def changeLog in currentBuild.changeSets) {
 // 		print"Changelogs: $changeLog"
 //             def entries = changeLog.items
