@@ -14,14 +14,24 @@ def determineCommitAuthor(currentBuild) {
     jenkinsCustomData = [:];
 
     if ( currentBuild.changeSets ) {
-	    currentBuild.changeSets.each { changeSet ->
-	    changeSet.each { entry ->
-		println "Commit ID: ${entry.commitId}"
-		println "Message: ${entry.msg}"
-		print("new author=="+getCommitAuthor(entry.commitId))
-	    }
-	}
+// 	    currentBuild.changeSets.each { changeSet ->
+// 	    changeSet.each { entry ->
+// 		println "Commit ID: ${entry.commitId}"
+// 		println "Message: ${entry.msg}"
+// 		print("new author=="+getCommitAuthor(entry.commitId))
+// 	    }
+// 	}
 	    
+	def commitIds = []
+	def gitLog = sh(script: 'git log --oneline', returnStdout: true).trim()
+	def lines = gitLog.split('\n')
+	lines.each { line ->
+	  def commitId = line.tokenize()[0]
+	  commitIds.add(commitId)
+	}
+	println commitIds
+	print("new author=="+getCommitAuthor(commitIds[0]))
+
 //         for (def changeLog in currentBuild.changeSets) {
 //             def entries = changeLog.items
 //             for (def entry in entries) {
@@ -30,14 +40,7 @@ def determineCommitAuthor(currentBuild) {
 //                 authors << entry.author.toString()
 //                 msgs << entry.msg
 // 	    print"ids==$ids"
-// // 	    def id = ids[0]
-// 		gitList = gitInfo.getGitInfo()
-//                 GIT_COMMIT = gitList[0]
-//                 GIT_AUTHOR = gitList[1]
-// 		print"GIT_COMMIT==$GIT_COMMIT"
-// 		print"GIT_AUTHOR==$GIT_AUTHOR"
-		    
-//             print("new author=="+getCommitAuthor(ids))
+//             print("new author=="+getCommitAuthor(entry.commitId.toString()))
 // 	    }
 //         }
         
