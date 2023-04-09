@@ -14,7 +14,7 @@ def determineCommitAuthor(currentBuild) {
     jenkinsCustomData = [:];
 
     if ( currentBuild.changeSets ) {
-	    changeSets.each { changeSet ->
+	    currentBuild.changeSets.each { changeSet ->
 	    changeSet.each { entry ->
 		println "Commit ID: ${entry.commitId}"
 		println "Message: ${entry.msg}"
