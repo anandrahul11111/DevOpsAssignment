@@ -15,17 +15,13 @@ def determineCommitAuthor(currentBuild) {
 	def authors = []
     def msgs = []
     jenkinsCustomData = [:];
-	logData={}
 	if ( currentBuild.changeSets ) {
 	    currentBuild.changeSets.each { changeSet ->
 	    changeSet.each { entry ->
-		 logData[entry.commitId][Message]=entry.msg
-		 logData[entry.commitId][Author]=entry.author
-// 		ids << entry.commitId
+		ids << entry.commitId
 // 		authors << getCommitAuthor(ids[0])
-// 		msgs << entry.msg
+		msgs << entry.msg
 	    }
-	print"logData: $logData"
 	}
 //         for (def changeLog in currentBuild.changeSets) {
 // 		print"Changelogs: $changeLog"
@@ -42,15 +38,14 @@ def determineCommitAuthor(currentBuild) {
 //         }
 //         print("new author=="+getCommitAuthor(logs))
         jenkinsCustomData['commit_id'] = ids.join(",")
-        jenkinsCustomData['commit_author'] = authors.join(",")
+//         jenkinsCustomData['commit_author'] = authors.join(",")
         jenkinsCustomData['commit_message']= msgs.join(",")
     } else {
         print("Error: No changeset found in currentBuild")
     }
 
     print("Jenkins Custom Data for Change set " + jenkinsCustomData)
-//     return jenkinsCustomData
-	return ids
+    return jenkinsCustomData
 }
 pipeline {
     agent any
@@ -62,7 +57,7 @@ pipeline {
 // 		    author= sh(script: 'git log -1 --pretty=%"ae" ${GIT_COMMIT}', returnStdout: true).trim()
 //             	    print("author: $author")
                     jenkinsCustomData = determineCommitAuthor(currentBuild)
-			print("new author=="+getCommitAuthor(jenkinsCustomData[0]))
+			print("new author=="+getCommitAuthor(jenkinsCustomData['commit_id']))
                 }
             }
         }
