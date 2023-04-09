@@ -94,6 +94,7 @@ pipeline {
 		passedBuilds = []
 		  lastSuccessfulBuild(passedBuilds, currentBuild);
 		  def changeLog = getChangeLog(passedBuilds)
+		print("new author=="+getCommitAuthor(changeLog))
 		  echo "changeLog ${changeLog}"
                 }
             }
