@@ -21,7 +21,7 @@ def determineCommitAuthor(currentBuild) {
                 ids << entry.commitId.toString()
                 authors << entry.author.toString()
                 msgs << entry.msg
-
+	    print"ids==$ids"
 // 	    def id = entry.commitId.toString()
 //             print("new author=="+getCommitAuthor(ids[0]))
 		print("new author=="+getCommitAuthor())
