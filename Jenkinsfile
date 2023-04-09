@@ -6,7 +6,6 @@ def getCommitAuthor(commitId){
             .unique()
             .findAll { it != 'noreply-github+ms@sap.com' }
 }
-@NonCPS
 def determineCommitAuthor(currentBuild) {
     def ids = []
 	def authors = []
@@ -23,7 +22,7 @@ def determineCommitAuthor(currentBuild) {
                 msgs << entry.msg
 
 	    def id = entry.commitId.toString()
-            print("new author=="+getCommitAuthor(id))            
+            print("new author=="+ids[0])            
 	    }
         }
         
