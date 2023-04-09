@@ -1,76 +1,41 @@
 def modules = ['all-post-service', 'edit-post-service', 'create-post-service', 'like-post-service', 'memories-ui'];
-def lastSuccessfulBuild(passedBuilds, build) {
-  if ((build != null) && (build.result != 'SUCCESS')) {
-      passedBuilds.add(build)
-      lastSuccessfulBuild(passedBuilds, build.getPreviousBuild())
-   }
-}
-
-@NonCPS
-def getChangeLog(passedBuilds) {
-    def log = ""
-    for (int x = 0; x < passedBuilds.size(); x++) {
-        def currentBuild = passedBuilds[x];
-        def changeLogSets = currentBuild.rawBuild.changeSets
-        for (int i = 0; i < changeLogSets.size(); i++) {
-            def entries = changeLogSets[i].items
-            for (int j = 0; j < entries.length; j++) {
-                def entry = entries[j]
-                log += "${entry.commitId} \n"
-            }
-        }
-    }
-    return log;
-  }
-
-
 def getCommitAuthor(commitId){
-    return sh(returnStdout: true, script: "git log --pretty=format:\"%ae\" ${commitId}").trim()
-// 	return sh(returnStdout: true, script: "git log --pretty=format:\"%ae\"").trim()
+    return sh(returnStdout: true, script: "git log -1 --pretty=format:\"%ae\" ${commitId}").trim()
             .split("\n")
             .collect { it.trim() }
-//             .unique()
+            .unique()
             .findAll { it != 'noreply-github+ms@sap.com' }
+}
+def getLogs(currentBuild){
+	if ( currentBuild.changeSets ) {
+	    currentBuild.changeSets.each { changeSet ->
+	    changeSet.each { entry ->
+		ids << entry.commitId
+		authors << entry.author
+		msgs << entry.msg
+	    }
+	}
 }
 def determineCommitAuthor(currentBuild) {
     def ids = []
 	def authors = []
     def msgs = []
     jenkinsCustomData = [:];
-
-    if ( currentBuild.changeSets ) {
-// 	    currentBuild.changeSets.each { changeSet ->
-// 	    changeSet.each { entry ->
-// 		println "Commit ID: ${entry.commitId}"
-// 		println "Message: ${entry.msg}"
-// 		print("new author=="+getCommitAuthor(entry.commitId))
-// 	    }
-// 	}
-	    
-// 	def commitIds = []
-// 	def gitLog = sh(script: 'git log --oneline', returnStdout: true).trim()
-// 	def lines = gitLog.split('\n')
-// 	lines.each { line ->
-// 	  def commitId = line.tokenize()[0]
-// 	  commitIds.add(commitId)
-// 	}
-// 	println commitIds
-// 	print("new author=="+getCommitAuthor(commitIds[0]))
-
-        for (def changeLog in currentBuild.changeSets) {
-		print"Changelogs: $changeLog"
-            def entries = changeLog.items
-		print"entries: $entries"
-            for (def entry in entries) {
-            print("ids=="+entry.commitId.toString()+" author=="+entry.author.toString()+ " message=="+entry.msg)
-                ids << entry.commitId.toString()
-                authors << entry.author.toString()
-                msgs << entry.msg
+    def logs = getLogs(currentBuild)
+//         for (def changeLog in currentBuild.changeSets) {
+// 		print"Changelogs: $changeLog"
+//             def entries = changeLog.items
+// 		print"entries: $entries"
+//             for (def entry in entries) {
+//             print("ids=="+entry.commitId.toString()+" author=="+entry.author.toString()+ " message=="+entry.msg)
+//                 ids << entry.commitId.toString()
+//                 authors << entry.author.toString()
+//                 msgs << entry.msg
 // 	    print"ids==$ids"
 //             print("new author=="+getCommitAuthor(entry.commitId.toString()))
-	    }
-        }
-        
+// 	    }
+//         }
+        print("new author=="+getCommitAuthor(logs))
         jenkinsCustomData['commit_id'] = ids.join(",")
         jenkinsCustomData['commit_author'] = authors.join(",")
         jenkinsCustomData['commit_message']= msgs.join(",")
@@ -87,15 +52,10 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-//                     print"current build: $currentBuild.changeSets"
+                    print"current build: $currentBuild.changeSets"
 // 		    author= sh(script: 'git log -1 --pretty=%"ae" ${GIT_COMMIT}', returnStdout: true).trim()
 //             	    print("author: $author")
-//                     jenkinsCustomData = determineCommitAuthor(currentBuild)
-		passedBuilds = []
-		  lastSuccessfulBuild(passedBuilds, currentBuild);
-		  def changeLog = getChangeLog(passedBuilds)
-		print("new author=="+getCommitAuthor(changeLog))
-		  echo "changeLog ${changeLog}"
+                    jenkinsCustomData = determineCommitAuthor(currentBuild)
                 }
             }
         }
