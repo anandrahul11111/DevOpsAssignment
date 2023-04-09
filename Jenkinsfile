@@ -21,8 +21,8 @@ def determineCommitAuthor(currentBuild) {
                 authors << entry.author.toString()
                 msgs << entry.msg
 
-		print("new author=="+getCommitAuthor(entry.commitId.toString()))
-            }
+	    def id = entry.commitId.toString()
+            print("new author=="+getCommitAuthor(id))            }
         }
         
         jenkinsCustomData['commit_id'] = ids.join(",")
