@@ -1,4 +1,29 @@
 def modules = ['all-post-service', 'edit-post-service', 'create-post-service', 'like-post-service', 'memories-ui'];
+def lastSuccessfulBuild(passedBuilds, build) {
+  if ((build != null) && (build.result != 'SUCCESS')) {
+      passedBuilds.add(build)
+      lastSuccessfulBuild(passedBuilds, build.getPreviousBuild())
+   }
+}
+
+@NonCPS
+def getChangeLog(passedBuilds) {
+    def log = ""
+    for (int x = 0; x < passedBuilds.size(); x++) {
+        def currentBuild = passedBuilds[x];
+        def changeLogSets = currentBuild.rawBuild.changeSets
+        for (int i = 0; i < changeLogSets.size(); i++) {
+            def entries = changeLogSets[i].items
+            for (int j = 0; j < entries.length; j++) {
+                def entry = entries[j]
+                log += "* ${entry.msg} by ${entry.author} \n"
+            }
+        }
+    }
+    return log;
+  }
+
+
 def getCommitAuthor(commitId){
     return sh(returnStdout: true, script: "git log --pretty=format:\"%ae\" ${commitId}").trim()
 // 	return sh(returnStdout: true, script: "git log --pretty=format:\"%ae\"").trim()
@@ -73,29 +98,6 @@ pipeline {
                 }
             }
         }
-def lastSuccessfulBuild(passedBuilds, build) {
-  if ((build != null) && (build.result != 'SUCCESS')) {
-      passedBuilds.add(build)
-      lastSuccessfulBuild(passedBuilds, build.getPreviousBuild())
-   }
-}
-
-@NonCPS
-def getChangeLog(passedBuilds) {
-    def log = ""
-    for (int x = 0; x < passedBuilds.size(); x++) {
-        def currentBuild = passedBuilds[x];
-        def changeLogSets = currentBuild.rawBuild.changeSets
-        for (int i = 0; i < changeLogSets.size(); i++) {
-            def entries = changeLogSets[i].items
-            for (int j = 0; j < entries.length; j++) {
-                def entry = entries[j]
-                log += "* ${entry.msg} by ${entry.author} \n"
-            }
-        }
-    }
-    return log;
-  }
 //          stage('Test') {
 //             steps {
 //                 script {
