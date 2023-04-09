@@ -44,7 +44,7 @@ def determineCommitAuthor(currentBuild) {
         print("Error: No changeset found in currentBuild")
     }
 
-    print("Jenkins Custom Data for Change set " + jenkinsCustomData)
+//     print("Jenkins Custom Data for Change set " + jenkinsCustomData)
     return jenkinsCustomData
 }
 pipeline {
@@ -57,7 +57,8 @@ pipeline {
 // 		    author= sh(script: 'git log -1 --pretty=%"ae" ${GIT_COMMIT}', returnStdout: true).trim()
 //             	    print("author: $author")
                     jenkinsCustomData = determineCommitAuthor(currentBuild)
-			print("new author=="+getCommitAuthor(jenkinsCustomData['commit_id']))
+		    jenkinsCustomData['commit_author'] = getCommitAuthor(jenkinsCustomData['commit_id']))
+			print("Jenkins Custom Data for Change set " + jenkinsCustomData)
                 }
             }
         }
